@@ -17,7 +17,7 @@ pipeline {
                 sh 'npm run build'
             }
         }
-        stage('Docker'){
+        stage('Docker-test'){
             agent{
                 docker{
                     image 'node:18-alpine'
@@ -25,10 +25,11 @@ pipeline {
                 }
             }
             steps{
-                echo 'hello docker'
+                echo 'hello docker-test'
                 sh 'npm --version'
                 sh 'ls -la'
                 sh 'touch container-yes.txt'
+                sh 'test -f src/index.js'
             }
         }
     }
