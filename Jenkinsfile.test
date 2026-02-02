@@ -1,14 +1,14 @@
 pipeline {
-    agent any
+    agent{
+        docker{
+            image 'mcr.microsoft.com/playwright:v1.58.0-noble'
+            reuseNode true
+        }
+    }
 
     stages {
         stage('build') {
-             agent{
-                docker{
-                    image 'mcr.microsoft.com/playwright:v1.58.0-noble'
-                    reuseNode true
-                }
-            }
+           
             steps {
                 echo 'Hello World'
                 sh 'ls -la'
@@ -17,7 +17,7 @@ pipeline {
                 sh 'npm run build'
             }
         }
-        stage('Docker-test'){
+        stage('Junit-test'){
            
             steps{
                 echo 'hello docker-test'
@@ -28,13 +28,13 @@ pipeline {
                 sh'npm test'
             }
         }
-        stage('Playwright'){
+        stage('Playwright-test'){
            
             steps{
                sh'''
                     npm install serve
                     serve -s build &
-                    sleep 5
+                    sleep 10
                     npx playwright test
                '''
             }
