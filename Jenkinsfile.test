@@ -28,6 +28,8 @@ pipeline {
                 sh'npm test'
             }
         }
+        //sh 'rm -rf playwright-report index.html'
+        // use this to remove previous report
         stage('Playwright-test'){
            
             steps{
@@ -37,7 +39,7 @@ pipeline {
                     sleep 10
                     npx playwright test
                     npx playwright test --reporter=html
-                    sh '#rm -rf playwright-report index.html'
+                    
                '''
             }
         }
