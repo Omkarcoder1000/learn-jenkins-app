@@ -1,0 +1,35 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('build') {
+            agent{
+                docker{
+                    imahe 'node:18-alpine'
+                    reuseNode true
+                }
+            }
+            steps {
+                echo 'Hello World'
+                sh 'ls -la'
+                sh 'node --versionsh'
+                sh 'npm ci'
+                sh 'npm run build'
+            }
+        }
+        stage('Docker'){
+            agent{
+                docker{
+                    image 'node:18-alpine'
+                    reuseNode true
+                }
+            }
+            steps{
+                echo 'hello docker'
+                sh 'npm --version'
+                sh 'ls -la'
+                sh 'touch container-yes.txt'
+            }
+        }
+    }
+}
