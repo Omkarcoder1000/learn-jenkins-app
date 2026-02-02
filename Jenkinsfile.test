@@ -34,7 +34,7 @@ pipeline {
            
             steps{
                sh'''
-                    sh 'rm -rf playwright-report'
+                    rm -rf playwright-report index.html
                     npm install serve
                     npx serve -s build -l 5000 &
                     sleep 10
