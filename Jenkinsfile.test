@@ -3,9 +3,9 @@ pipeline {
 
     stages {
         stage('build') {
-            agent{
+             agent{
                 docker{
-                    image 'node:18-alpine'
+                    image 'mcr.microsoft.com/playwright:v1.58.0-noble'
                     reuseNode true
                 }
             }
@@ -18,12 +18,7 @@ pipeline {
             }
         }
         stage('Docker-test'){
-            agent{
-                docker{
-                    image 'node:18-alpine'
-                    reuseNode true
-                }
-            }
+           
             steps{
                 echo 'hello docker-test'
                 sh 'npm --version'
@@ -34,12 +29,7 @@ pipeline {
             }
         }
         stage('Playwright'){
-            agent{
-                docker{
-                    image 'mcr.microsoft.com/playwright:v1.58.0-noble'
-                    reuseNode true
-                }
-            }
+           
             steps{
                sh'''
                     npm install serve
