@@ -28,7 +28,7 @@ pipeline {
                 echo 'hello docker-test'
                 sh 'npm --version'
                 sh 'ls -la'
-                sh 'touch container-yes.txt'
+                sh '#touch container-yes.txt'
                 sh 'test -f src/index.js'
                 sh'npm test'
             }
