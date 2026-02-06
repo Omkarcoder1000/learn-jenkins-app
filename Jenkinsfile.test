@@ -17,41 +17,56 @@ pipeline {
                 sh 'npm run build'
             }
         }
-        stage('Junit-test'){
+        stage('parallel'){
+            parallel{
+                stage('Junit-test'){
            
-            steps{
-                echo 'Junit-started'
-                sh 'npm --version'
-                sh 'ls -la'
-                sh '#touch container-yes.txt'
-                sh 'test -f src/index.js'
-                sh'npm test'
+                    steps{
+                        echo 'Junit-started'
+                        sh 'npm --version'
+                        sh 'ls -la'
+                        sh '#touch container-yes.txt'
+                        sh 'test -f src/index.js'
+                        sh'npm test'
+                    }
+                    post{
+                        always{
+                            
+                            junit 'jest-results/junit.xml'
+                            
+                        }
+                    }
+                }
+               
+                //sh 'rm -rf playwright-report index.html'
+                // use this to remove previous report
+                stage('Playwright-test'){
+                
+                    steps{
+                        echo 'Playwright-started'
+                        sh'''
+                            rm -rf playwright-report index.html
+                            npm install serve
+                            npx serve -s build -l 5000 &
+                            sleep 10
+                            npx playwright test
+                            npx playwright test --reporter=html
+                            
+                        '''
+                    }
+                    post{
+                        always{
+                            
+                            
+                            publishHTML([allowMissing: false, alwaysLinkToLastBuild: true, keepAll: true, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'Playwright HTML Report',  useWrapperFileDirectly: false ])
+                        }
+                    }
+                }
+
             }
         }
-        //sh 'rm -rf playwright-report index.html'
-        // use this to remove previous report
-        stage('Playwright-test'){
-           
-            steps{
-                echo 'Playwright-started'
-               sh'''
-                    rm -rf playwright-report index.html
-                    npm install serve
-                    npx serve -s build -l 5000 &
-                    sleep 10
-                    npx playwright test
-                    npx playwright test --reporter=html
-                    
-               '''
-            }
-        }
+       
     }
 
-    post{
-        always{
-            
-            junit 'jest-results/junit.xml'
-            publishHTML([allowMissing: false, alwaysLinkToLastBuild: true, keepAll: true, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'Playwright HTML Report',  useWrapperFileDirectly: false ])
-        }
-    }
+    
 }
