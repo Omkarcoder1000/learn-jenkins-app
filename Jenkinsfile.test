@@ -89,7 +89,7 @@ pipeline {
         }
          stage('Playwright-test-pre-deployment'){
             environment{
-                CI_ENVIRONMENT_URL = '$env.STAGING_URL'
+                CI_ENVIRONMENT_URL = "$env.STAGING_URL"
             }
             steps{
                 echo 'Playwright-started'
