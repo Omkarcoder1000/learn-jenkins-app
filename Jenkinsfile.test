@@ -71,7 +71,6 @@ pipeline {
             }
         }
         stage('Pre-Deploy') {
-           
             steps {
                 echo 'Build started'
                 sh'''
@@ -82,10 +81,11 @@ pipeline {
                     npx netlify deploy --dir=build --json > deploy-output.json
                     npx node-jq -r '.deploy_url' deploy-output.json
                 '''
+                script{
+                    env.STAGING_URL = sh(script: "npx node-jq -r '.deploy_url' deploy-output.json", returnStdout: true)
+                }
             }
-            script{
-                env.STAGING_URL = sh(script: "npx node-jq -r '.deploy_url' deploy-output.json", returnStdout: true)
-            }
+           
         }
          stage('Playwright-test-pre-deployment'){
             environment{
